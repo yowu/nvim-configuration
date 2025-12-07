@@ -25,9 +25,6 @@ map({ "n", "i", "v" }, "<C-s>", "<cmd>w<CR>", { desc = "Save file" })
 -- Quit
 map("n", "<Leader>q", "<cmd>confirm q<CR>", { desc = "Quit" })
 
--- Clear search highlights
--- map("n", "<Esc><Esc>", "<cmd>noh<CR>", { desc = "Clear highlights" })
-
 -- ============================================================================
 -- Window Navigation
 -- ============================================================================
@@ -106,12 +103,9 @@ map("n", "<F2>", vim.lsp.buf.rename, { desc = "LSP Rename" })
 map("n", "<F12>", vim.lsp.buf.definition, { desc = "LSP Go to definition" })
 
 -- ============================================================================
--- View Tidy (extends <Esc><Esc>)
+-- View Tidy (<Esc><Esc>)
 -- ============================================================================
 
--- Note: This extends <Esc><Esc> to also call view-tidy.clean
--- The base <Esc><Esc> for noh is defined above, this adds extra functionality
 map("n", "<Esc><Esc>", function()
-    vim.cmd "noh"
-    require("extras.view-tidy").clean()
+  require("extras.view-tidy").clean()
 end, { desc = "Clear highlights and tidy view" })
