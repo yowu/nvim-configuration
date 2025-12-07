@@ -62,6 +62,8 @@ local function create_on_init(server_opts)
   end
 end
 
+local code_lens_group = vim.api.nvim_create_augroup("LspCodeLens", { clear = true })
+
 ---Setup LSP features for a buffer
 ---@param opts LspConfig Global LSP configuration
 ---@param bufnr integer Buffer number
@@ -83,7 +85,9 @@ local function setup_features(opts, bufnr)
   if opts.codelens and opts.codelens.enabled and vim.lsp.codelens then
     vim.lsp.codelens.refresh { bufnr = bufnr }
 
+    vim.api.nvim_clear_autocmds({ group = code_lens_group, buffer = bufnr })
     vim.api.nvim_create_autocmd({ "BufEnter", "InsertLeave" }, {
+      group = code_lens_group,
       buffer = bufnr,
       callback = function()
         vim.lsp.codelens.refresh { bufnr = bufnr }
@@ -132,8 +136,6 @@ local function setup_default_capabilities()
   return capabilities
 end
 
--- Initialize default capabilities once
-M.default_capabilities = setup_default_capabilities()
 
 ---Main LSP setup function
 ---@param opts LspConfig
@@ -149,7 +151,7 @@ function M.setup(opts)
   }, opts)
 
   -- Merge global capabilities with defaults
-  local global_capabilities = vim.tbl_deep_extend("force", {}, M.default_capabilities, config.capabilities)
+  local global_capabilities = setup_default_capabilities()
 
   -- Setup each LSP server
   for server_name, server_opts in pairs(config.servers) do
@@ -201,20 +203,6 @@ function M.restart()
     vim.cmd "edit" -- Trigger LSP to reattach
   end
   vim.notify("LSP clients restarted", vim.log.levels.INFO)
-end
-
----Backward compatibility: wrapper for setup_on_attach
----@param opts LspConfig
----@param server_opts LspServerConfig
----@return fun(client: vim.lsp.Client, bufnr: integer)
-function M.setup_on_attach(opts, server_opts)
-  return M.create_on_attach(opts, server_opts)
-end
-
----Backward compatibility: main setup function
----@param opts LspConfig
-function M.setup_lsp(opts)
-  M.setup(opts)
 end
 
 return M
