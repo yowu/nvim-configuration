@@ -110,12 +110,6 @@ function M.is_wsl()
   return _cache.is_wsl
 end
 
----Check if running in a GUI environment (neovide, nvim-qt, etc.)
----@return boolean
-function M.is_gui()
-  return vim.g.neovide ~= nil or vim.g.nvy ~= nil or vim.g.goneovim ~= nil
-end
-
 ---Get the home directory path
 ---@return string
 function M.get_home_dir()
@@ -127,6 +121,12 @@ function M.get_home_dir()
     end
   end
   return _cache.home_dir
+end
+
+---Get the executable file extension for the current platform
+---@return string
+function M.get_executable_extension()
+  return M.is_windows() and ".exe" or ""
 end
 
 ---Execute a command based on the platform

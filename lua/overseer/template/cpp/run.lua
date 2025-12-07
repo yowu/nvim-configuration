@@ -2,7 +2,7 @@ return {
   name = "C++: run active file",
   builder = function()
     -- Full path to current file (see :help expand())
-    local ext = vim.fn.has "win32" ~= 0 and ".exe" or ""
+    local ext = require("core.platform").get_executable_extension()
     local out = vim.fn.expand "%:t:r" .. ext
     return {
       cmd = { vim.loop.cwd() .. "/bin/" .. out },
