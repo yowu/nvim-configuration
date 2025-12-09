@@ -11,24 +11,34 @@ local base_alternate_map = {
   tsx = { "spec.tsx", "test.tsx" },
 }
 
--- Function to preprocess the map and make it symmetrical
-local function make_symmetrical(map)
-  local symmetrical_map = {}
-  for key, values in pairs(map) do
-    symmetrical_map[key] = values
-    for _, value in ipairs(values) do
-      symmetrical_map[value] = symmetrical_map[value] or {}
+local function extend_alternate(map, extra)
+  if not extra or vim.tbl_isempty(extra) then
+    return
+  end
 
-      if not vim.tbl_contains(symmetrical_map[value], key) then
-        table.insert(symmetrical_map[value], key)
+  for key, values in pairs(extra) do
+    map[key] = map[key] or {}
+    for _, value in ipairs(values) do
+      if not vim.tbl_contains(map[key], value) then
+        table.insert(map[key], value)
+      end
+      map[value] = map[value] or {}
+      if not vim.tbl_contains(map[value], key) then
+        table.insert(map[value], key)
       end
     end
   end
+end
+
+-- Function to preprocess the map and make it symmetrical
+local function make_symmetrical(map)
+  local symmetrical_map = {}
+  extend_alternate(symmetrical_map, map)
   return symmetrical_map
 end
 
 -- Preprocessed symmetrical alternate map
-local alternate_map = make_symmetrical(base_alternate_map)
+local _alternate_map = {}
 
 -- Helper function to format alternates as a string
 local function format_alternates(alternates)
@@ -38,11 +48,21 @@ end
 function M.get_alternate_pattern(file)
   local root = file:match "[^.]+"
   local ext = file:gsub(root .. ".", "", 1)
-  local alternates = alternate_map[ext]
+  local alternates = _alternate_map[ext]
   if not alternates then
     return ""
   end
   return root .. "." .. format_alternates(alternates)
+end
+
+function M.setup(opts)
+  -- Initialize the alternate map
+  _alternate_map = make_symmetrical(base_alternate_map)
+
+  -- Allow user to extend the map with custom alternates
+  if opts and opts.alternate_map then
+    extend_alternate(_alternate_map, opts.alternate_map)
+  end
 end
 
 function M.find_alternate()
@@ -63,7 +83,7 @@ local function debug_alternate_map()
   if not debug then
     return
   end
-  local map_as_string = vim.inspect(alternate_map)
+  local map_as_string = vim.inspect(_alternate_map)
   vim.notify(map_as_string, vim.log.levels.INFO)
 end
 

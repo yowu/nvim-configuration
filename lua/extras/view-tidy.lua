@@ -110,4 +110,16 @@ function M.clean()
   clean_view()
 end
 
+function M.setup()
+  vim.api.nvim_create_autocmd("VimEnter", {
+    group = vim.api.nvim_create_augroup("ViewTidy", { clear = true }),
+    desc = "Clear last search",
+    callback = function()
+      vim.cmd "let @/ = ''"
+    end,
+  })
+
+  vim.keymap.set("n", "<Esc><Esc>", M.clean, { desc = "which_key_ignore" })
+end
+
 return M

@@ -1,34 +1,22 @@
----@class Util
+---@class PlatformModule
 local M = {}
-
--- Cache platform detection results
-local _cache = {}
 
 ---Check if running on Windows
 ---@return boolean
 function M.is_windows()
-  if _cache.is_windows == nil then
-    _cache.is_windows = vim.fn.has "win32" == 1 or vim.fn.has "win64" == 1
-  end
-  return _cache.is_windows
+  return vim.fn.has("win32") == 1 or vim.fn.has("win64") == 1
 end
 
 ---Check if running on macOS
 ---@return boolean
 function M.is_macos()
-  if _cache.is_macos == nil then
-    _cache.is_macos = vim.fn.has "mac" == 1 or vim.fn.has "macunix" == 1
-  end
-  return _cache.is_macos
+  return vim.fn.has("mac") == 1 or vim.fn.has("macunix") == 1
 end
 
 ---Check if running on Linux
 ---@return boolean
 function M.is_linux()
-  if _cache.is_linux == nil then
-    _cache.is_linux = vim.fn.has "unix" == 1 and not M.is_macos()
-  end
-  return _cache.is_linux
+  return vim.fn.has("unix") == 1 and not M.is_macos()
 end
 
 ---Check if running on Unix-like system (Linux or macOS)
@@ -40,19 +28,19 @@ end
 ---Get the platform path separator
 ---@return string
 function M.get_path_separator()
-  if _cache.path_separator == nil then
-    _cache.path_separator = M.is_windows() and "\\" or "/"
-  end
-  return _cache.path_separator
+  return M.is_windows() and "\\" or "/"
 end
 
 ---Get the PATH environment variable delimiter
 ---@return string
 function M.get_path_delimiter()
-  if _cache.path_delimiter == nil then
-    _cache.path_delimiter = M.is_windows() and ";" or ":"
-  end
-  return _cache.path_delimiter
+  return M.is_windows() and ";" or ":"
+end
+
+---Get the platform line separator
+---@return string
+function M.get_line_separator()
+  return M.is_windows() and "\r\n" or "\n"
 end
 
 ---Join path segments with the appropriate separator
@@ -76,57 +64,42 @@ end
 ---Get the platform name as a string
 ---@return "windows"|"macos"|"linux"|"unknown"
 function M.get_platform()
-  if _cache.platform == nil then
-    if M.is_windows() then
-      _cache.platform = "windows"
-    elseif M.is_macos() then
-      _cache.platform = "macos"
-    elseif M.is_linux() then
-      _cache.platform = "linux"
-    else
-      _cache.platform = "unknown"
-    end
+  if M.is_windows() then
+    return "windows"
+  elseif M.is_macos() then
+    return "macos"
+  elseif M.is_linux() then
+    return "linux"
+  else
+    return "unknown"
   end
-  return _cache.platform
 end
 
 ---Check if running in WSL (Windows Subsystem for Linux)
 ---@return boolean
 function M.is_wsl()
-  if _cache.is_wsl == nil then
-    if M.is_linux() then
-      local handle = io.open("/proc/version", "r")
-      if handle then
-        local version = handle:read "*a"
-        handle:close()
-        _cache.is_wsl = version:lower():find "microsoft" ~= nil
-      else
-        _cache.is_wsl = false
-      end
-    else
-      _cache.is_wsl = false
-    end
+  if not M.is_linux() then
+    return false
   end
-  return _cache.is_wsl
+
+  local handle = io.open("/proc/version", "r")
+  if handle then
+    local version = handle:read("*a")
+    handle:close()
+    return version:lower():find("microsoft") ~= nil
+  end
+
+  return false
 end
 
 ---Get the home directory path
 ---@return string
 function M.get_home_dir()
-  if _cache.home_dir == nil then
-    if M.is_windows() then
-      _cache.home_dir = os.getenv "USERPROFILE" or os.getenv "HOME" or ""
-    else
-      _cache.home_dir = os.getenv "HOME" or ""
-    end
+  if M.is_windows() then
+    return os.getenv("USERPROFILE") or os.getenv("HOME") or ""
+  else
+    return os.getenv("HOME") or ""
   end
-  return _cache.home_dir
-end
-
----Get the executable file extension for the current platform
----@return string
-function M.get_executable_extension()
-  return M.is_windows() and ".exe" or ""
 end
 
 ---Execute a command based on the platform
@@ -178,11 +151,6 @@ function M.open_with_system(path)
     cmd = string.format("xdg-open '%s'", path)
   end
   vim.fn.system(cmd)
-end
-
----Clear the cache (useful for testing)
-function M.clear_cache()
-  _cache = {}
 end
 
 return M

@@ -9,9 +9,8 @@ local augroup = vim.api.nvim_create_augroup
 -- FilePost Event (for lazy loading plugins)
 -- ============================================================================
 
-augroup("UserFilePost", { clear = true })
 autocmd({ "UIEnter", "BufReadPost", "BufNewFile" }, {
-  group = "UserFilePost",
+  group = augroup("UserFilePost", { clear = true }),
   callback = function(args)
     local file = vim.api.nvim_buf_get_name(args.buf)
     local buftype = vim.api.nvim_get_option_value("buftype", { buf = args.buf })
@@ -22,7 +21,7 @@ autocmd({ "UIEnter", "BufReadPost", "BufNewFile" }, {
 
     if file ~= "" and buftype ~= "nofile" and vim.g.ui_entered then
       vim.api.nvim_exec_autocmds("User", { pattern = "FilePost", modeline = false })
-      vim.api.nvim_del_augroup_by_name("UserFilePost")
+      vim.api.nvim_del_augroup_by_name "UserFilePost"
 
       vim.schedule(function()
         vim.api.nvim_exec_autocmds("FileType", {})
@@ -35,56 +34,56 @@ autocmd({ "UIEnter", "BufReadPost", "BufNewFile" }, {
 -- Close Windows with 'q'
 -- ============================================================================
 
-augroup("QCloseWindows", { clear = true })
+do
+  local group = augroup("QCloseWindows", { clear = true })
+  local cache = {}
 
-local q_close_cache = {}
-
-autocmd("BufWinEnter", {
-  group = "QCloseWindows",
-  desc = "Make q close help, man, quickfix, etc",
-  callback = function(args)
-    if q_close_cache[args.buf] then
-      return
-    end
-    q_close_cache[args.buf] = true
-
-    -- Check if q is already mapped
-    for _, mapping in ipairs(vim.api.nvim_buf_get_keymap(args.buf, "n")) do
-      if mapping.lhs == "q" then
+  autocmd("BufWinEnter", {
+    group = group,
+    desc = "Make q close help, man, quickfix, etc",
+    callback = function(args)
+      if cache[args.buf] then
         return
       end
-    end
+      cache[args.buf] = true
 
-    -- Map q to close for special buffer types
-    if vim.tbl_contains({ "help", "nofile", "quickfix" }, vim.bo[args.buf].buftype) then
-      vim.keymap.set("n", "q", "<Cmd>close<CR>", {
-        desc = "Close window",
-        buffer = args.buf,
-        silent = true,
-        nowait = true,
-      })
-    end
-  end,
-})
+      -- Check if q is already mapped
+      for _, mapping in ipairs(vim.api.nvim_buf_get_keymap(args.buf, "n")) do
+        if mapping.lhs == "q" then
+          return
+        end
+      end
 
-autocmd("BufDelete", {
-  group = "QCloseWindows",
-  desc = "Clean up q_close_windows cache",
-  callback = function(args)
-    q_close_cache[args.buf] = nil
-  end,
-})
+      -- Map q to close for special buffer types
+      if vim.tbl_contains({ "help", "nofile", "quickfix" }, vim.bo[args.buf].buftype) then
+        vim.keymap.set("n", "q", "<Cmd>close<CR>", {
+          desc = "Close window",
+          buffer = args.buf,
+          silent = true,
+          nowait = true,
+        })
+      end
+    end,
+  })
+
+  autocmd("BufDelete", {
+    group = group,
+    desc = "Clean up cache",
+    callback = function(args)
+      cache[args.buf] = nil
+    end,
+  })
+end
 
 -- ============================================================================
 -- Highlight on Yank
 -- ============================================================================
 
-augroup("HighlightYank", { clear = true })
 autocmd("TextYankPost", {
-  group = "HighlightYank",
+  group = augroup("HighlightYank", { clear = true }),
   desc = "Highlight yanked text",
   callback = function()
-    vim.highlight.on_yank({ timeout = 200 })
+    vim.hl.on_yank { timeout = 200 }
   end,
 })
 
@@ -92,9 +91,8 @@ autocmd("TextYankPost", {
 -- Terminal Settings
 -- ============================================================================
 
-augroup("TerminalSettings", { clear = true })
 autocmd({ "TermOpen", "WinEnter" }, {
-  group = "TerminalSettings",
+  group = augroup("TerminalSettings", { clear = true }),
   pattern = "term://*",
   command = "startinsert",
   desc = "Auto enter insert mode in terminal",
@@ -104,24 +102,14 @@ autocmd({ "TermOpen", "WinEnter" }, {
 -- Dim Inactive Windows (optional)
 -- ============================================================================
 
-augroup("DimInactive", { clear = true })
 autocmd("BufWinEnter", {
-  group = "DimInactive",
+  group = augroup("DimInactive", { clear = true }),
   desc = "Dim inactive window",
   callback = function(args)
     -- Skip for certain filetypes
     if not vim.tbl_contains({ "DiffviewFiles" }, vim.bo[args.buf].filetype) then
-      vim.cmd([[setlocal winhighlight=NormalNC:PmenuSbar]])
+      vim.cmd [[setlocal winhighlight=NormalNC:PmenuSbar]]
     end
-  end,
-})
-
-
-autocmd("VimEnter", {
-  group = augroup("ViewTidy", { clear = true }),
-  desc = "Clear last search",
-  callback = function()
-    vim.cmd "let @/ = ''"
   end,
 })
 
@@ -129,9 +117,8 @@ autocmd("VimEnter", {
 -- Neo-tree Auto Open
 -- ============================================================================
 
-augroup("NeoTreeStart", { clear = true })
 autocmd("BufEnter", {
-  group = "NeoTreeStart",
+  group = augroup("NeoTreeStart", { clear = true }),
   desc = "Open Neo-Tree on startup with directory",
   callback = function()
     if package.loaded["neo-tree"] then
@@ -148,7 +135,7 @@ autocmd("BufEnter", {
 -- ============================================================================
 -- Custom Filetypes
 -- ============================================================================
-vim.filetype.add({
+vim.filetype.add {
   extension = {
     ridl = "ruby",
   },
@@ -156,4 +143,4 @@ vim.filetype.add({
   pattern = {
     ["journal.*.txt"] = "vb",
   },
-})
+}

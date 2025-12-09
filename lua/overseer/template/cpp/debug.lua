@@ -3,7 +3,7 @@ return {
   builder = function()
     -- Full path to current file (see :help expand())
     local file = vim.fn.expand "%:p"
-    local ext = require("core.platform").get_executable_extension()
+    local ext = vim.fn.has "win32" ~= 0 and ".exe" or ""
     local out = vim.loop.cwd() .. "/bin/" .. vim.fn.expand "%:t:r" .. ext
     return {
       cmd = { "clang++" },

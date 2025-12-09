@@ -5,12 +5,6 @@
 -- This file contains ONLY core Neovim keymaps that don't depend on plugins.
 -- Plugin-dependent keymaps belong in their respective plugin specs (keys = {}).
 --
--- KEYMAP LOCATIONS:
--- 1. Core vim keymaps        → here (vim.keymap.set)
--- 2. Plugin keymaps          → plugin spec (keys = {})
--- 3. LSP keymaps             → core/lsp.lua (buffer-local on attach)
--- 4. Buffer-local keymaps    → autocmd or on_attach callbacks
---
 -- ============================================================================
 
 local map = vim.keymap.set
@@ -24,6 +18,15 @@ map({ "n", "i", "v" }, "<C-s>", "<cmd>w<CR>", { desc = "Save file" })
 
 -- Quit
 map("n", "<Leader>q", "<cmd>confirm q<CR>", { desc = "Quit" })
+
+-- Clear search highlights
+-- map("n", "<Esc><Esc>", "<cmd>noh<CR>", { desc = "Clear highlights" })
+
+-- Copy/paste with system clipboard
+map({ 'n', 'x' }, 'gy', '"+y', { desc = 'Copy to system clipboard' })
+map('n', 'gp', '"+p', { desc = 'Paste from system clipboard' })
+-- - Paste in Visual with `P` to not copy selected text (`:h v_P`)
+map('x', 'gp', '"+P', { desc = 'Paste from system clipboard' })
 
 -- ============================================================================
 -- Window Navigation
@@ -94,18 +97,3 @@ map("n", "[q", "<cmd>cprev<CR>", { desc = "Previous quickfix" })
 -- Exit terminal mode
 map("t", "<Esc><Esc>", "<C-\\><C-N>", { desc = "Exit terminal mode" })
 map("t", "<C-q>", "<cmd>close<CR>", { desc = "Close terminal" })
-
--- ============================================================================
--- LSP Keymaps (set when LSP attaches)
--- ============================================================================
-
-map("n", "<F2>", vim.lsp.buf.rename, { desc = "LSP Rename" })
-map("n", "<F12>", vim.lsp.buf.definition, { desc = "LSP Go to definition" })
-
--- ============================================================================
--- View Tidy (<Esc><Esc>)
--- ============================================================================
-
-map("n", "<Esc><Esc>", function()
-  require("extras.view-tidy").clean()
-end, { desc = "Clear highlights and tidy view" })
