@@ -205,18 +205,4 @@ function M.restart()
   vim.notify("LSP clients restarted", vim.log.levels.INFO)
 end
 
----Backward compatibility: wrapper for setup_on_attach
----@param opts LspConfig
----@param server_opts LspServerConfig
----@return fun(client: vim.lsp.Client, bufnr: integer)
-function M.setup_on_attach(opts, server_opts)
-  return M.create_on_attach(opts, server_opts)
-end
-
----Backward compatibility: main setup function
----@param opts LspConfig
-function M.setup_lsp(opts)
-  M.setup(opts)
-end
-
 return M
