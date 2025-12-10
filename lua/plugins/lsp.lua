@@ -61,12 +61,18 @@ return {
     },
     opts = function()
       return {
+        disabled_server_capabilities = {
+          "semanticTokensProvider"
+        },
         inlay_hints = {
-          enabled = false,
-          exclude = { "rust" }, -- filetypes for which you don't want to enable inlay hints
+          enabled = true,
+          exclude = { "rust", "lua" }, -- filetypes for which you don't want to enable inlay hints
         },
         codelens = {
           enabled = true,
+        },
+        folding = {
+          enabled = false
         },
         capabilities = {
           workspace = {
