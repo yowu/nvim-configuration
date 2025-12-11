@@ -33,7 +33,7 @@ return {
     },
     event = "User FilePost",
     config = function()
-      require("codecompanion").setup({
+      require("codecompanion").setup {
         strategies = {
           chat = {
             adapter = "copilot",
@@ -42,7 +42,7 @@ return {
             adapter = "copilot",
           },
         },
-      })
+      }
     end,
 
     keys = {

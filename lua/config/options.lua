@@ -14,29 +14,29 @@ g.mapleader = " "
 g.maplocalleader = ","
 
 -- UI
-opt.number = true            -- Show line numbers
-opt.numberwidth = 2          -- Number column width
-opt.signcolumn = "yes"       -- Always show sign column
-opt.cursorline = true        -- Highlight current line
+opt.number = true -- Show line numbers
+opt.numberwidth = 2 -- Number column width
+opt.signcolumn = "yes" -- Always show sign column
+opt.cursorline = true -- Highlight current line
 opt.cursorlineopt = "number" -- Only highlight line number
-opt.showmode = false         -- Don't show mode (in statusline instead)
-opt.ruler = false            -- Don't show ruler
-opt.laststatus = 3           -- Global statusline
-opt.cmdheight = 0            -- Hide command line when not used
+opt.showmode = false -- Don't show mode (in statusline instead)
+opt.ruler = false -- Don't show ruler
+opt.laststatus = 3 -- Global statusline
+opt.cmdheight = 0 -- Hide command line when not used
 
 -- Clipboard
 opt.clipboard = "unnamedplus" -- Use system clipboard
 
 -- Indentation
-opt.expandtab = true   -- Use spaces instead of tabs
-opt.shiftwidth = 2     -- Indent width
-opt.tabstop = 2        -- Tab width
-opt.softtabstop = 2    -- Soft tab width
+opt.expandtab = true -- Use spaces instead of tabs
+opt.shiftwidth = 2 -- Indent width
+opt.tabstop = 2 -- Tab width
+opt.softtabstop = 2 -- Soft tab width
 opt.smartindent = true -- Smart autoindenting
 
 -- Search
 opt.ignorecase = true -- Ignore case in search
-opt.smartcase = true  -- Unless uppercase is used
+opt.smartcase = true -- Unless uppercase is used
 
 -- Mouse
 opt.mouse = "a" -- Enable mouse support
@@ -46,29 +46,29 @@ opt.splitbelow = true -- Horizontal splits go below
 opt.splitright = true -- Vertical splits go right
 
 -- Files
-opt.undofile = true  -- Persistent undo
+opt.undofile = true -- Persistent undo
 opt.updatetime = 250 -- Faster completion
 
 -- Appearance
 opt.fillchars = { eob = " " } -- Remove ~ from empty lines
-opt.timeoutlen = 400          -- Faster key sequence completion
+opt.timeoutlen = 400 -- Faster key sequence completion
 
 -- Tags (for ctags support)
 opt.tags = "./tags;,./tags;./.tags;,./.tmp_tags;"
 
 -- Which wrap keys can move to prev/next line
-opt.whichwrap:append("<>[]hl")
+opt.whichwrap:append "<>[]hl"
 
 -- ============================================================================
 -- Diagnostics Configuration
 -- ============================================================================
 
-vim.diagnostic.config({
+vim.diagnostic.config {
   update_in_insert = false, -- Don't update diagnostics in insert mode
   virtual_lines = {
-    current_line = true,    -- Show virtual lines on current line
+    current_line = true, -- Show virtual lines on current line
   },
-  severity_sort = true,     -- Sort by severity
+  severity_sort = true, -- Sort by severity
   signs = {
     text = {
       [vim.diagnostic.severity.ERROR] = "󰅚",
@@ -77,7 +77,7 @@ vim.diagnostic.config({
       [vim.diagnostic.severity.INFO] = "󰋽",
     },
   },
-})
+}
 
 -- ============================================================================
 -- Global Variables
@@ -92,5 +92,4 @@ g.loaded_perl_provider = 0
 g.loaded_ruby_provider = 0
 
 -- NvChad theme cache path
-g.base46_cache = vim.fn.stdpath("data") .. "/base46/"
-
+g.base46_cache = vim.fn.stdpath "data" .. "/base46/"

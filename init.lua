@@ -14,4 +14,4 @@ require "config.lazy"
 -- Phase 4: Post-Plugin Setup
 -- These run after plugins are loaded
 require "config.autocmds" -- Autocommands & events
-require "config.polish"   -- Other things
+require "config.polish" -- Other things

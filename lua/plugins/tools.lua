@@ -56,8 +56,20 @@ return {
     },
     event = "VeryLazy",
     keys = {
-      { "<Leader>/", function() require("extras.grep").grep_string() end, desc = "Search" },
-      { "<M-/>", function() require("extras.grep").grep_string({ search = vim.fn.expand("<cword>") }) end, desc = "Search word under cursor" },
+      {
+        "<Leader>/",
+        function()
+          require("extras.grep").grep_string()
+        end,
+        desc = "Search",
+      },
+      {
+        "<M-/>",
+        function()
+          require("extras.grep").grep_string { search = vim.fn.expand "<cword>" }
+        end,
+        desc = "Search word under cursor",
+      },
     },
   },
 
@@ -92,7 +104,7 @@ return {
       local function check()
         local cwd = vim.uv.cwd()
         if vim.fn.filereadable(cwd .. "/CMakeLists.txt") == 1 then
-          require("lazy").load({ plugins = { "cmake-tools.nvim" } })
+          require("lazy").load { plugins = { "cmake-tools.nvim" } }
           loaded = true
         end
       end

@@ -18,12 +18,12 @@ local is_windows = require("core.platform").is_windows()
 if is_windows then
   vim.opt.shell = "pwsh.exe"
   vim.opt.shellcmdflag =
-  "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;"
-  vim.cmd([[
+    "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;"
+  vim.cmd [[
     let &shellredir = '2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode'
     let &shellpipe = '2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode'
     set shellquote= shellxquote=
-  ]])
+  ]]
 
   -- Windows clipboard
   vim.g.clipboard = {
@@ -50,4 +50,3 @@ if vim.g.neovide then
   vim.g.neovide_floating_corner_radius = 0.5
   vim.g.neovide_input_macos_option_key_is_meta = "only_left"
 end
-

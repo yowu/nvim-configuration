@@ -16,15 +16,69 @@ return {
       },
     },
     keys = {
-      { "<Leader>gL", function() require("gitsigns").blame_line({ full = true }) end, desc = "Blame Line (full)" },
-      { "<Leader>gR", function() require("gitsigns").reset_buffer() end, desc = "Reset Buffer" },
-      { "<Leader>gj", function() require("gitsigns").nav_hunk("next", { navigation_message = false }) end, desc = "Next Hunk" },
-      { "<Leader>gk", function() require("gitsigns").nav_hunk("prev", { navigation_message = false }) end, desc = "Prev Hunk" },
-      { "<Leader>gl", function() require("gitsigns").blame_line() end, desc = "Blame" },
-      { "<Leader>gp", function() require("gitsigns").preview_hunk() end, desc = "Preview Hunk" },
-      { "<Leader>gr", function() require("gitsigns").reset_hunk() end, desc = "Reset Hunk" },
-      { "<Leader>gs", function() require("gitsigns").stage_hunk() end, desc = "Stage Hunk" },
-      { "<Leader>gu", function() require("gitsigns").undo_stage_hunk() end, desc = "Undo Stage Hunk" },
+      {
+        "<Leader>gL",
+        function()
+          require("gitsigns").blame_line { full = true }
+        end,
+        desc = "Blame Line (full)",
+      },
+      {
+        "<Leader>gR",
+        function()
+          require("gitsigns").reset_buffer()
+        end,
+        desc = "Reset Buffer",
+      },
+      {
+        "<Leader>gj",
+        function()
+          require("gitsigns").nav_hunk("next", { navigation_message = false })
+        end,
+        desc = "Next Hunk",
+      },
+      {
+        "<Leader>gk",
+        function()
+          require("gitsigns").nav_hunk("prev", { navigation_message = false })
+        end,
+        desc = "Prev Hunk",
+      },
+      {
+        "<Leader>gl",
+        function()
+          require("gitsigns").blame_line()
+        end,
+        desc = "Blame",
+      },
+      {
+        "<Leader>gp",
+        function()
+          require("gitsigns").preview_hunk()
+        end,
+        desc = "Preview Hunk",
+      },
+      {
+        "<Leader>gr",
+        function()
+          require("gitsigns").reset_hunk()
+        end,
+        desc = "Reset Hunk",
+      },
+      {
+        "<Leader>gs",
+        function()
+          require("gitsigns").stage_hunk()
+        end,
+        desc = "Stage Hunk",
+      },
+      {
+        "<Leader>gu",
+        function()
+          require("gitsigns").undo_stage_hunk()
+        end,
+        desc = "Undo Stage Hunk",
+      },
     },
   },
 

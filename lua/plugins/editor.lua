@@ -15,17 +15,17 @@ return {
     "echasnovski/mini.surround",
     opts = {
       mappings = {
-        add = "gsa",            -- Add surrounding in Normal and Visual modes
-        delete = "gsd",         -- Delete surrounding
-        find = "gsf",           -- Find surrounding (to the right)
-        find_left = "gsF",      -- Find surrounding (to the left)
-        highlight = "gsh",      -- Highlight surrounding
-        replace = "gsr",        -- Replace surrounding
+        add = "gsa", -- Add surrounding in Normal and Visual modes
+        delete = "gsd", -- Delete surrounding
+        find = "gsf", -- Find surrounding (to the right)
+        find_left = "gsF", -- Find surrounding (to the left)
+        highlight = "gsh", -- Highlight surrounding
+        replace = "gsr", -- Replace surrounding
         update_n_lines = "gsn", -- Update `n_lines`
       },
     },
     keys = {
-      { "gsa", desc = "Add surrounding",                     mode = { "n", "v" } },
+      { "gsa", desc = "Add surrounding", mode = { "n", "v" } },
       { "gsd", desc = "Delete surrounding" },
       { "gsf", desc = "Find right surrounding" },
       { "gsF", desc = "Find left surrounding" },
@@ -118,9 +118,9 @@ return {
       icons = { mappings = false },
       disable = { ft = {}, bt = { "TelescopePrompt", "terminal" } },
       spec = {
-        { "<Leader>G",      group = true, desc = "Debug" },
-        { "<Leader>g",      group = true, desc = "Git" },
-        { "<Leader>c",      group = true, desc = "CodeCompanion" },
+        { "<Leader>G", group = true, desc = "Debug" },
+        { "<Leader>g", group = true, desc = "Git" },
+        { "<Leader>c", group = true, desc = "CodeCompanion" },
         { "<LocalLeader>j", group = true, desc = "Jester" },
         { "<LocalLeader>g", group = true, desc = "Goto" },
       },

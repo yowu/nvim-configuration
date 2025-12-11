@@ -55,14 +55,14 @@ local function setup_keymaps(bufnr)
   local map = vim.keymap.set
 
   -- Navigation
-  map("n", "gd", vim.lsp.buf.definition, opts("Go to definition"))
-  map("n", "<F12>", vim.lsp.buf.definition, opts("Go to definition"))
-  map("n", "gy", vim.lsp.buf.type_definition, opts("Goto T[y]pe Definition"))
-  map("n", "gD", vim.lsp.buf.declaration, opts("Goto Declaration"))
+  map("n", "gd", vim.lsp.buf.definition, opts "Go to definition")
+  map("n", "<F12>", vim.lsp.buf.definition, opts "Go to definition")
+  map("n", "gy", vim.lsp.buf.type_definition, opts "Goto T[y]pe Definition")
+  map("n", "gD", vim.lsp.buf.declaration, opts "Goto Declaration")
 
   -- Actions
-  map("n", "<F2>", vim.lsp.buf.rename, opts("Rename"))
-  map("n", "grl", vim.lsp.codelens.run, opts("CodeLens Action"))
+  map("n", "<F2>", vim.lsp.buf.rename, opts "Rename")
+  map("n", "grl", vim.lsp.codelens.run, opts "CodeLens Action")
 end
 
 ---Disable specific server capabilities
@@ -93,7 +93,7 @@ local function setup_inlay_hints(client, bufnr, config)
     return
   end
 
-  if not client:supports_method("textDocument/inlayHint") then
+  if not client:supports_method "textDocument/inlayHint" then
     return
   end
 
@@ -124,12 +124,12 @@ local function setup_codelens(client, bufnr, config)
     return
   end
 
-  if not client:supports_method("textDocument/codeLens") then
+  if not client:supports_method "textDocument/codeLens" then
     return
   end
 
   -- Initial refresh
-  vim.lsp.codelens.refresh({ bufnr = bufnr })
+  vim.lsp.codelens.refresh { bufnr = bufnr }
 
   -- Use buffer-specific augroup name to avoid clearing other buffers' autocmds
   local group_name = string.format("CoreLspCodeLens_%d", bufnr)
@@ -140,7 +140,7 @@ local function setup_codelens(client, bufnr, config)
     buffer = bufnr,
     callback = function()
       if vim.api.nvim_buf_is_valid(bufnr) then
-        vim.lsp.codelens.refresh({ bufnr = bufnr })
+        vim.lsp.codelens.refresh { bufnr = bufnr }
       end
     end,
     desc = "Refresh code lens",
@@ -170,7 +170,7 @@ local function setup_folding(client, bufnr, config)
     return
   end
 
-  if not client:supports_method("textDocument/foldingRange") then
+  if not client:supports_method "textDocument/foldingRange" then
     return
   end
 
@@ -260,12 +260,7 @@ local function setup_lsp_server(server_name, server_opts, global_capabilities)
   config.enabled = nil
 
   -- Merge capabilities
-  config.capabilities = vim.tbl_deep_extend(
-    "force",
-    {},
-    global_capabilities,
-    config.capabilities or {}
-  )
+  config.capabilities = vim.tbl_deep_extend("force", {}, global_capabilities, config.capabilities or {})
 
   -- Register and enable the LSP server
   vim.lsp.config(server_name, config)

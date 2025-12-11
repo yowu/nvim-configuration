@@ -10,7 +10,7 @@ return {
     opts_extend = { "ensure_installed" },
     opts = function()
       -- Get parsers from language manager
-      local parsers = require "core.lang-manager".get_treesitter_parsers()
+      local parsers = require("core.lang-manager").get_treesitter_parsers()
 
       -- Add base parsers that are always needed
       local base_parsers = { "lua", "vim", "regex" }
@@ -96,9 +96,9 @@ return {
       local selects = {
         { "af", "@function.outer", "textobjects", "Select around function" },
         { "if", "@function.inner", "textobjects", "Select inside function" },
-        { "ac", "@class.outer",    "textobjects", "Select around class" },
-        { "ic", "@class.inner",    "textobjects", "Select inside class" },
-        { "as", "@local.scope",    "locals",      "Select around scope" },
+        { "ac", "@class.outer", "textobjects", "Select around class" },
+        { "ic", "@class.inner", "textobjects", "Select inside class" },
+        { "as", "@local.scope", "locals", "Select around scope" },
       }
 
       for _, spec in ipairs(selects) do
@@ -106,19 +106,19 @@ return {
       end
 
       local moves = {
-        { "]m", "goto_next_start",     "@function.outer",                "textobjects", "Next function start" },
-        { "]]", "goto_next_start",     "@class.outer",                   "textobjects", "Next class start" },
-        { "]o", "goto_next_start",     { "@loop.inner", "@loop.outer" }, "textobjects", "Next loop start" },
-        { "]s", "goto_next_start",     "@local.scope",                   "locals",      "Next scope start" },
-        { "]z", "goto_next_start",     "@fold",                          "folds",       "Next fold start" },
-        { "]M", "goto_next_end",       "@function.outer",                "textobjects", "Next function end" },
-        { "][", "goto_next_end",       "@class.outer",                   "textobjects", "Next class end" },
-        { "[m", "goto_previous_start", "@function.outer",                "textobjects", "Previous function start" },
-        { "[[", "goto_previous_start", "@class.outer",                   "textobjects", "Previous class start" },
-        { "[M", "goto_previous_end",   "@function.outer",                "textobjects", "Previous function end" },
-        { "[]", "goto_previous_end",   "@class.outer",                   "textobjects", "Previous class end" },
-        { "]d", "goto_next",           "@conditional.outer",             "textobjects", "Next conditional" },
-        { "[d", "goto_previous",       "@conditional.outer",             "textobjects", "Previous conditional" },
+        { "]m", "goto_next_start", "@function.outer", "textobjects", "Next function start" },
+        { "]]", "goto_next_start", "@class.outer", "textobjects", "Next class start" },
+        { "]o", "goto_next_start", { "@loop.inner", "@loop.outer" }, "textobjects", "Next loop start" },
+        { "]s", "goto_next_start", "@local.scope", "locals", "Next scope start" },
+        { "]z", "goto_next_start", "@fold", "folds", "Next fold start" },
+        { "]M", "goto_next_end", "@function.outer", "textobjects", "Next function end" },
+        { "][", "goto_next_end", "@class.outer", "textobjects", "Next class end" },
+        { "[m", "goto_previous_start", "@function.outer", "textobjects", "Previous function start" },
+        { "[[", "goto_previous_start", "@class.outer", "textobjects", "Previous class start" },
+        { "[M", "goto_previous_end", "@function.outer", "textobjects", "Previous function end" },
+        { "[]", "goto_previous_end", "@class.outer", "textobjects", "Previous class end" },
+        { "]d", "goto_next", "@conditional.outer", "textobjects", "Next conditional" },
+        { "[d", "goto_previous", "@conditional.outer", "textobjects", "Previous conditional" },
       }
 
       for _, spec in ipairs(moves) do

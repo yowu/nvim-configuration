@@ -4,19 +4,19 @@ local M = {}
 ---Check if running on Windows
 ---@return boolean
 function M.is_windows()
-  return vim.fn.has("win32") == 1 or vim.fn.has("win64") == 1
+  return vim.fn.has "win32" == 1 or vim.fn.has "win64" == 1
 end
 
 ---Check if running on macOS
 ---@return boolean
 function M.is_macos()
-  return vim.fn.has("mac") == 1 or vim.fn.has("macunix") == 1
+  return vim.fn.has "mac" == 1 or vim.fn.has "macunix" == 1
 end
 
 ---Check if running on Linux
 ---@return boolean
 function M.is_linux()
-  return vim.fn.has("unix") == 1 and not M.is_macos()
+  return vim.fn.has "unix" == 1 and not M.is_macos()
 end
 
 ---Check if running on Unix-like system (Linux or macOS)
@@ -84,9 +84,9 @@ function M.is_wsl()
 
   local handle = io.open("/proc/version", "r")
   if handle then
-    local version = handle:read("*a")
+    local version = handle:read "*a"
     handle:close()
-    return version:lower():find("microsoft") ~= nil
+    return version:lower():find "microsoft" ~= nil
   end
 
   return false
@@ -96,9 +96,9 @@ end
 ---@return string
 function M.get_home_dir()
   if M.is_windows() then
-    return os.getenv("USERPROFILE") or os.getenv("HOME") or ""
+    return os.getenv "USERPROFILE" or os.getenv "HOME" or ""
   else
-    return os.getenv("HOME") or ""
+    return os.getenv "HOME" or ""
   end
 end
 

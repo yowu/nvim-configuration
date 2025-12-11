@@ -23,10 +23,10 @@ map("n", "<Leader>q", "<cmd>confirm q<CR>", { desc = "Quit" })
 -- map("n", "<Esc><Esc>", "<cmd>noh<CR>", { desc = "Clear highlights" })
 
 -- Copy/paste with system clipboard
-map({ 'n', 'x' }, 'gy', '"+y', { desc = 'Copy to system clipboard' })
-map('n', 'gp', '"+p', { desc = 'Paste from system clipboard' })
+map({ "n", "x" }, "gy", '"+y', { desc = "Copy to system clipboard" })
+map("n", "gp", '"+p', { desc = "Paste from system clipboard" })
 -- - Paste in Visual with `P` to not copy selected text (`:h v_P`)
-map('x', 'gp', '"+P', { desc = 'Paste from system clipboard' })
+map("x", "gp", '"+P', { desc = "Paste from system clipboard" })
 
 -- ============================================================================
 -- Window Navigation
