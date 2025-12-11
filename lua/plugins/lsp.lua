@@ -36,7 +36,7 @@ return {
         for _, tool in ipairs(opts.ensure_installed) do
           local p = mr.get_package(tool)
           if not p:is_installed() then
-            print(string.format("Installing %s", p.name))
+            vim.notify(string.format("Mason installing %s", p.name), vim.log.levels.INFO)
             p:install()
           end
         end
@@ -62,7 +62,7 @@ return {
     opts = function()
       return {
         disabled_server_capabilities = {
-          "semanticTokensProvider"
+          "semanticTokensProvider",
         },
         inlay_hints = {
           enabled = true,
@@ -72,7 +72,7 @@ return {
           enabled = true,
         },
         folding = {
-          enabled = false
+          enabled = false,
         },
         capabilities = {
           workspace = {
