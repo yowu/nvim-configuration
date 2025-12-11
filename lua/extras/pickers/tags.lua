@@ -2,9 +2,71 @@ local M = {}
 
 local uv = vim.uv or vim.loop
 
-local function left_pad(str, numSpaces)
-  local spaces = string.rep(" ", numSpaces)
-  return spaces .. str
+-- Mapping of ctags kind abbreviations to full names
+local KIND_ABBR_TO_NAME = {
+  c = "class",
+  d = "macro",
+  e = "enumerator",
+  f = "function",
+  g = "enum",
+  l = "local",
+  m = "member",
+  n = "namespace",
+  p = "prototype",
+  s = "struct",
+  t = "typedef",
+  u = "union",
+  v = "variable",
+  x = "external",
+  C = "constant",
+  E = "event",
+  F = "field",
+  M = "method",
+  P = "property",
+  i = "interface",
+}
+
+-- Mapping of full ctags kind names to LSP kinds
+local KIND_NAME_TO_LSP = {
+  class = "Class",
+  macro = "Constant",
+  enumerator = "EnumMember",
+  ["function"] = "Function",
+  enum = "Enum",
+  ["local"] = "Variable",
+  member = "Field",
+  namespace = "Namespace",
+  prototype = "Function",
+  struct = "Struct",
+  typedef = "TypeParameter",
+  union = "Struct",
+  variable = "Variable",
+  external = "Variable",
+  constant = "Constant",
+  event = "Event",
+  field = "Field",
+  method = "Method",
+  property = "Property",
+  interface = "Interface",
+}
+
+-- Convert ctags kind (abbreviation or full name) to LSP kind
+-- Two-step conversion: abbr -> full name -> LSP kind
+local function kind_to_lsp(kind)
+  if not kind or kind == "" then
+    return "Text"
+  end
+
+  local name = KIND_ABBR_TO_NAME[kind] or kind:lower()
+
+  local lsp_kind = KIND_NAME_TO_LSP[name]
+
+  return lsp_kind or "Text"
+end
+
+local function right_pad(str, width)
+  local padding = math.max(0, width - #str)
+  return str .. string.rep(" ", padding)
 end
 
 ---@class snacks.picker.readtags.Config: snacks.picker.Config
@@ -22,9 +84,6 @@ local function get_cmd(opts, filter)
     "-t",
     opts.tagfile or "tags",
   }
-
-  args = vim.deepcopy(args)
-
   -- Add any extra arguments
   vim.list_extend(args, opts.args or {})
 
@@ -61,10 +120,9 @@ local function readtags(opts, ctx)
     cmd = cmd,
     args = args,
     cwd = cwd,
-    ---@param item snacks.picker.finder.Item
     transform = function(item)
       -- Parse the readtag output
-      -- Format is typically: name<TAB>file<TAB>ex_cmd<TAB>extension_fields
+      -- Format: name<TAB>file<TAB>ex_cmd<TAB>extension_fields
       local parts = vim.split(item.text, "\t")
       if #parts < 3 then
         Snacks.notify.error("invalid readtag output:\n" .. item.text)
@@ -73,38 +131,34 @@ local function readtags(opts, ctx)
 
       local name, file, ex_cmd = parts[1], parts[2], parts[3]
 
-      -- Extract line number from ex_cmd if it's a line number
-      local line_num = ex_cmd:match "^(%d+)$"
-      if not line_num then
-        -- Try to extract line number from pattern like /^function foo(/;/
-        line_num = ex_cmd:match "/^.+/;/(%d+)"
+      -- Validate essential parts
+      if not name or name == "" or not file or file == "" then
+        return false
       end
 
-      item.name = name
       item.file = file
 
-      local padding_num = (40 - #file) > 0 and (40 - #file) or 0
-      item.line = left_pad(" " .. name .. " " .. (parts[4] or ""), padding_num)
+      --we need to transpile the "*" to a "\*"
+      item.search = ex_cmd:gsub("%*", "\\*")
 
-      if line_num then
-        item.pos = { tonumber(line_num), 0 }
-      else
-        -- If we can't extract a line number, we'll use the search for vim to jump
-        -- but we need to transpile the "*" to a "\*"
-        ex_cmd = ex_cmd:gsub("%*", "\\*")
-        item.search = ex_cmd
-      end
-
-      -- Add any extension fields as metadata
+      -- Add extension fields as metadata
       item.meta = {}
       for i = 4, #parts do
-        local key, value = parts[i]:match "([^:]+):(.+)"
+        local key, value = parts[i]:match "^([^:]+):(.+)$"
         if key and value then
           item.meta[key] = value
         end
       end
+
+      item.kind = item.meta.kind or ""
+      item.lsp_kind = kind_to_lsp(item.kind)
+      local padding_width = #item.kind == 1 and 3 or 12
+      item.name = right_pad(item.kind, padding_width) .. name
+      item.text = item.kind .. ":" .. file -- make kind:file searchable
+      return true
     end,
   })
+
   return require("snacks.picker.source.proc").proc(config, ctx)
 end
 
@@ -112,11 +166,10 @@ function M.picker(opts)
   opts = opts or {}
   local picker_opts = vim.tbl_extend("force", opts, {
     finder = readtags,
-    format = "file",
+    format = "lsp_symbol",
+    workspace = true, -- to show file path in lsp_symbol mode
     title = "Find tag",
-    source = "ctags",
     auto_confirm = true,
-    cmd = "readtags",
   })
 
   Snacks.picker.pick(picker_opts)
