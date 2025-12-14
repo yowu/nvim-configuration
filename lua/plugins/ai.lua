@@ -34,7 +34,7 @@ return {
     event = "User FilePost",
     config = function()
       require("codecompanion").setup {
-        strategies = {
+        interactions = {
           chat = {
             adapter = "copilot",
           },

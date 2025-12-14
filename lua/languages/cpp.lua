@@ -1,13 +1,17 @@
 ---C/C++ language configuration
 
-local is_win32 = require("core.platform").is_windows()
 local clangd = require("core.platform").platform_value {
   windows = "clangd.exe",
   macos = "/usr/local/opt/llvm/bin/clangd",
   linux = "/usr/bin/clangd",
   default = "clangd",
 }
-local ignore_files = { ".clangdignore", ".tmpignore" }
+
+local function ignore_clangd()
+  -- require("project_nvim.project").on_buf_enter()
+  local ignore_file = vim.uv.cwd() .. "/.ignoreclangd"
+  return vim.fn.filereadable(ignore_file) == 1
+end
 
 return {
   name = "cpp",
@@ -22,15 +26,10 @@ return {
         capabilities = {
           offsetEncoding = "utf-8",
         },
-        on_init = function(client)
-          if client.workspace_folders then
-            local path = client.workspace_folders[1].name
-            for _, ignore_file in ipairs(ignore_files) do
-              if vim.fn.filereadable(path .. "/" .. ignore_file) == 1 then
-                client.stop(not is_win32)
-                break
-              end
-            end
+        -- Only start clangd if .ignoreclangd file is not present in the cwd
+        root_dir = function(_, on_dir)
+          if not ignore_clangd() then
+            on_dir(vim.fn.getcwd())
           end
         end,
       },
