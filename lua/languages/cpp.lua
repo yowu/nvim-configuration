@@ -8,9 +8,12 @@ local clangd = require("core.platform").platform_value {
 }
 
 local function ignore_clangd()
-  -- require("project_nvim.project").on_buf_enter()
-  local ignore_file = vim.uv.cwd() .. "/.ignoreclangd"
-  return vim.fn.filereadable(ignore_file) == 1
+  local root = vim.fn.getcwd()
+  local ok, project = pcall(require, "project_nvim.project")
+  if ok then
+    root = project.get_project_root()
+  end
+  return vim.fn.filereadable(root .. "/.ignoreclangd") == 1
 end
 
 return {

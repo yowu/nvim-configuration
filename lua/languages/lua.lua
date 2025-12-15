@@ -27,16 +27,7 @@ return {
             },
           },
         },
-
-        on_init = function(client)
-          local is_windows = require("core.platform").is_windows()
-          if client.workspace_folders then
-            local path = client.workspace_folders[1].name
-            if not vim.uv.fs_stat(path .. "/lazy-lock.json") and not vim.uv.fs_stat(path .. "/.luarc.json") then
-              client.stop(not is_windows)
-            end
-          end
-        end,
+        root_markers = { ".luarc.json", "lazy-lock.json", ".stylua.toml" },
       },
     },
 
